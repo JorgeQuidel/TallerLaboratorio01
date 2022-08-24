@@ -1,20 +1,45 @@
+import java.util.Scanner;
+
 public class ColeccionLibros {
     public static void main(String[] args) {
+        menu();
+    }
+
+    public static void menu() {
         String[][] misLibros = new String[100][3];
-        String libro = "El Hobbit";
-        String autor = "J.R.R. Tolkien";
-        String editorial = "Ed. Planeta";
+        int opcion = 0;
+        do {
+            mostrarOpciones();
+            opcion = elegirOpcion();
+            switch (opcion) {
+                case 1 -> agregarLibro(misLibros);
+                case 2 -> buscarLibroPorNombre(misLibros);
+                case 3 -> mostrarTotalLibros(misLibros);
+                case 4 -> mostrarEspaciosDisponibles(misLibros);
+                case 5 -> mostrarTodaColeccion(misLibros);
+            }
+        }while(opcion != 0);
 
-        agregarLibro(misLibros, libro, autor, editorial);
-        agregarLibro(misLibros, libro, autor, editorial);
+    }
 
-        buscarLibroPorNombre(misLibros, libro);
+    public static String[] ingresarLibro() {
+        String[] datosLibro = new String[3];
+        System.out.println("Ingrese el Nombre del Libro");
+        datosLibro[0] = ingresarTexto();
 
-        mostrarTotalLibros(misLibros);
-        mostrarEspaciosDisponibles(misLibros);
+        System.out.println("Ingrese el Autor del Libro");
+        datosLibro[1] = ingresarTexto();
 
-        mostrarTodaColeccion(misLibros);
+        System.out.println("Ingrese la Editorial del Libro");
+        datosLibro[2] = ingresarTexto();
 
+        return datosLibro;
+    }
+
+    public static String ingresarTexto() {
+        Scanner input = new Scanner(System.in);
+        String texto = input.nextLine();
+        return texto;
     }
 
     public static void mostrarEspaciosDisponibles(String[][] misLibros) {
@@ -36,10 +61,12 @@ public class ColeccionLibros {
         System.out.println("-----COLECCION-----");
     }
 
-    public static void buscarLibroPorNombre(String[][] misLibros, String libro) {
-        for (int i = 0; i < misLibros.length; i++) {
-            if(misLibros[i][0] == libro){
-                System.out.println("Libro Encontrado: " + misLibros[i][0]);
+    public static void buscarLibroPorNombre(String[][] misLibros) {
+        System.out.println("Ingresa el nombre del libro a buscar: ");
+        String nombre = ingresarTexto();
+        for (int i = 0; i < totalLibros(misLibros); i++) {
+            if(misLibros[i][0].equals(nombre)){
+                System.out.println("Libro Encontrado");
             }
         }
     }
@@ -62,12 +89,40 @@ public class ColeccionLibros {
         return cont;
     }
 
-    public static void agregarLibro(String[][] misLibros, String libro, String autor, String editorial) {
+    public static void agregarLibro(String[][] misLibros) {
         int posicionDisponible = totalLibros(misLibros);
-        misLibros[posicionDisponible][0] = libro;
-        misLibros[posicionDisponible][1] = autor;
-        misLibros[posicionDisponible][2] = editorial;
+        if(posicionDisponible==100){
+            System.out.println("No queda espacio");
+        }else{
+            String[] datosColeccion = ingresarLibro();
+            misLibros[posicionDisponible][0] = datosColeccion[0];
+            misLibros[posicionDisponible][1] = datosColeccion[1];
+            misLibros[posicionDisponible][2] = datosColeccion[2];
+        }
+    }
 
+    public static void mostrarOpciones() {
+        System.out.println("[0].SALIR");
+        System.out.println("[1].AGREGAR LIBRO");
+        System.out.println("[2].BUSCAR LIBRO");
+        System.out.println("[3].MOSTRAR ESPACIOS USADOS");
+        System.out.println("[4].MOSTRAR ESPACIOS DISPONIBLES");
+        System.out.println("[5].MOSTRAR TODA LA COLECCION");
+    }
+
+    public static int elegirOpcion() {
+        Scanner input = new Scanner(System.in);
+        int opcion = 0;
+        do{
+            try{
+                opcion = input.nextInt();
+            }catch (Exception e){
+                System.out.println("Por favor ingrese un numero que corresponda a una de las opciones");
+                input.next();
+            }
+        }while(opcion<-1 || opcion>5);
+
+        return opcion;
     }
 
 }
